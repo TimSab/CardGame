@@ -17,10 +17,6 @@ namespace ConsoleApp18
             Value = value;
         }
 
-        public Card()
-        {            
-        }
-
         public bool IsTrump(CardSuit trump)
         {
             return Suit == trump;
@@ -120,6 +116,10 @@ namespace ConsoleApp18
 
     public enum CardValue
     {
+        Two,
+        Three,
+        Four,
+        Five,
         Six,
         Seven,
         Eight,
@@ -128,7 +128,8 @@ namespace ConsoleApp18
         Jack,
         Queen,
         King,
-        Ace
+        Ace,
+        Joker
     }
 
     enum CardPosition

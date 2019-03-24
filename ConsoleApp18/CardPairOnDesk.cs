@@ -10,7 +10,7 @@ namespace ConsoleApp18
     {
         public Card LargerCard { get; private set; }
         public Card LessCard { get; private set; }
-        
+
         //public CardPairOnDesk()
         //{
         //    LargerCard = new Card();
@@ -19,19 +19,14 @@ namespace ConsoleApp18
 
         public void Add(Card card)
         {
-            if(LargerCard is null && LessCard is null)
+            if (LargerCard is null && LessCard is null)
             {
                 LessCard = card;
             }
-
-            else if(!(LessCard is null))
+            else if (!(LessCard is null) && card > LessCard)
             {
-                if(card > LessCard)
-                {
-                    LargerCard = card;
-                }                
+                LargerCard = card;
             }
-
             else
             {
                 throw new Exception("нельзя отбиваться меньшей картой");
@@ -40,7 +35,7 @@ namespace ConsoleApp18
 
         public override string ToString()
         {
-            if(LargerCard is null)
+            if (LargerCard is null)
             {
                 return $"{LessCard.ToString()}:";
             }

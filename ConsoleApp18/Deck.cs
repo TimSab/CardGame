@@ -11,9 +11,19 @@ namespace ConsoleApp18
         public Stack<Card> Cards { get; private set; }
         public CardSuit TrumpSuit { get; private set; }
 
-        public Deck()
+        public Deck(int countDeck)
         {
-            Cards = new Stack<Card>(36);
+            Cards = new Stack<Card>(countDeck);
+            if(countDeck == 36)
+                foreach (CardSuit suit in Enum.GetValues(typeof(CardSuit)))
+                {
+                    for (int i = 4; i < 13; i++)
+                    {
+                        Cards.Push(new Card(suit, (CardValue)i));
+                    }
+                }
+
+            else
             foreach (CardSuit suit in Enum.GetValues(typeof(CardSuit)))
             {
                 foreach (CardValue value in Enum.GetValues(typeof(CardValue)))
@@ -22,7 +32,8 @@ namespace ConsoleApp18
                 }
             }
 
-            GetTrumpSuit();
+            Shuffle();
+            TrumpSuit = GetTrumpSuit();
         }
 
         public void Shuffle()

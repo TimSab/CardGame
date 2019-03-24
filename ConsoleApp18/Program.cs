@@ -19,13 +19,19 @@ namespace ConsoleApp18
 
             //    AppDomain.CurrentDomain.UnhandledException += ExceptionHandler;
             var countPlayers = 6;
-            var game = new Game(countPlayers);
+            var game = new DurakGame(countPlayers);
             var players = new List<Player>(countPlayers);
             for (int i = 1; i <= countPlayers; i++)
             {
                 players.Add(new Player(i.ToString()));
             }
-            var desk = new ConsoleDesk(game, players);
+
+            foreach (var player in players)
+            {
+                game.TryConnect(player);
+            }
+            game.StartGame();
+            var desk = new ConsoleDesk(game);
         }
     }
 }

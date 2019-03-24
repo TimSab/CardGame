@@ -11,11 +11,13 @@ namespace ConsoleApp18
         public List<Card> Hand { get; set; }
         public string Name { get; set; }
         public int ConnectionNumber { get; set; }
+        public StatusPlayer StatusPlayer { get; set; }
 
         public Player(string name)
         {
             Hand = new List<Card>();
             Name = name;
+            StatusPlayer = StatusPlayer.awaitStatus;
         }
 
         public Card Throw(Card card)
@@ -41,16 +43,37 @@ namespace ConsoleApp18
             throw new ArgumentException($"у игрока {Name} нет карты {Hand[numberCard -1]}");
         }
 
-        public void OnPass()
-        {
-            Pass?.Invoke();
-        }
-
-        public void GetAll()
+        public void Pass()
         {
             
         }
 
-        public event Action Pass; // добавить метод который переводит указатель очереди на следующего игрока.
+        public void GetAll(List<CardPairOnDesk> cardPairsOnDesk)
+        {
+            foreach (var cardPairOnDesk in cardPairsOnDesk)
+            {
+                if (!(cardPairOnDesk.LargerCard is null))
+                {
+                    var largerCard = new Card(cardPairOnDesk.LargerCard.Suit, cardPairOnDesk.LargerCard.Value);
+                    Hand.Add(largerCard);
+                }
+
+                if (!(cardPairOnDesk.LessCard is null))
+                {
+                    var lessCard = new Card(cardPairOnDesk.LessCard.Suit, cardPairOnDesk.LessCard.Value);
+                    Hand.Add(lessCard);
+                }
+            }
+            cardPairsOnDesk.RemoveRange(0, cardPairsOnDesk.Count);
+
+        }
+    }
+
+    public enum StatusPlayer
+    {
+        throwsUp,                           // подкидывает   ПРИ ЭТОМ СТАТУСЕ ИГРОК МОЖЕТ ПРОПУСТИТЬ ХОД ИЛИ ПОДКИНУТЬ КАРТУ.
+        defence,                        // отбивается    ПРИ ЭТОМ СТАТУСЕ ИГРОК ОБЯЗАН ПОКРЫТЬ КАРТУ, ЛИБО ЗАБРАТЬ ВСЕ КАРТЫ СО СТОЛА.
+        attack,                                 // ходит(когда уже все карты биты, когда на столе нет карт) ПРИ ЭТОМ СТАТУСЕ ИГРОК ОБЯЗАН ХОДТЬ.
+        awaitStatus                               // ожидает       ПРИ ЭТОМ СТАТУСЕ ИГРОК МОЖЕТ ПРОПУСТИТЬ ХОД.
     }
 }
