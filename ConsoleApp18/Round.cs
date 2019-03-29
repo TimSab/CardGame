@@ -19,8 +19,14 @@ namespace ConsoleApp18
         {
             LastRoundResult = RoundEndResult;
             RoundStatus = RoundStatus.continues;
-            WhoseTurn = DecideWhoseTurn(game);
+            if (LastRoundResult == null)
+            {
+                WhoseTurn = DecideWhoseTurnFirstRound(game);
+            }
             game.SetStatusPlayer();
+            DecideWhoseTurn(game);
+
+
             foreach (var player in game.Players)
             {
                 if (player.StatusPlayer == StatusPlayer.defence)
@@ -48,27 +54,30 @@ namespace ConsoleApp18
             {
                 foreach (var player in throwPlayers)
                 {
-                    if (player.ConnectionNumber == i % (game.Players.Count + 1))
+                    if (player.ConnectionNumber == i % game.Players.Count + 1)
                     {
                         listThrowPlayer.Add(player);
+                        break;
                     }
                 }
             }
             return listThrowPlayer;
         }
 
-        public List<Player> GetNewQueueThrowPlayers(DurakGame game, Player firstInNewListThrowPlayers)
+        public List<Player> GetNewQueueThrowPlayers(DurakGame game, Player lastThrowUpPlayer)
         {
+            var firstInNewListThrowPlayersConnectionNumber = lastThrowUpPlayer.ConnectionNumber + 1;
             var listThrowPlayer = new List<Player>();
             var throwPlayers = game.Players.Where(p => p.StatusPlayer == StatusPlayer.throwsUp).ToArray();
 
-            for (int i = firstInNewListThrowPlayers.ConnectionNumber + 1; i <= firstInNewListThrowPlayers.ConnectionNumber + throwPlayers.Length; i++)
+            for (int i = firstInNewListThrowPlayersConnectionNumber; i < firstInNewListThrowPlayersConnectionNumber + throwPlayers.Length; i++)
             {
                 foreach (var player in throwPlayers)
                 {
-                    if (player.ConnectionNumber == i % (game.Players.Count + 1))
+                    if (player.ConnectionNumber == i % game.Players.Count + 1)
                     {
                         listThrowPlayer.Add(player);
+                        break;
                     }
                 }
             }
@@ -84,6 +93,11 @@ namespace ConsoleApp18
                     return player_;
                 }
             }
+            throw new Exception("некому ходить");
+        }
+
+        public Player DecideWhoseTurnFirstRound(DurakGame game)
+        {
             Player firstPlayer = null;
             var fufel = true;
             Card minTrumpCard = new Card(game.Deck.TrumpSuit, CardValue.Ace);

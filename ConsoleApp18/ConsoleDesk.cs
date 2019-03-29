@@ -50,72 +50,88 @@ namespace ConsoleApp18
 
         public void CurrentRound(DurakGame game)
         {
-            while (true)
+            for (int i = 1; i < game.Players.Count-1; i++)
             {
-                for (int i = 0; i < game.Players.Count; i++)
+                while (true) // этот цикл нужен чтобы заствавить игрока если он не подкидывает и нажал кнопку  пропустить - ходить еще раз.
                 {
-                    while (true) // этот цикл нужен чтобы заствавить игрока если он не подкидывает и нажал кнопку  пропустить - ходить еще раз.
+                    Console.WriteLine($"Козырная масть {game.Deck.TrumpSuit}");
+                    Console.WriteLine($"Ходит игрок {game.Round.WhoseTurn.Name}");             //{game.WhoseTurn.Name}
+                    Console.WriteLine("Выберите карту, нажав соответствующее число");
+                    if (game.Round.WhoseTurn.StatusPlayer == StatusPlayer.throwsUp)
                     {
-                        Console.WriteLine($"Козырная масть {game.Deck.TrumpSuit}");
-                        Console.WriteLine($"Ходит игрок {game.Round.WhoseTurn.Name}");             //{game.WhoseTurn.Name}
-                        Console.WriteLine("Выберите карту, нажав соответствующее число");
-                        if (game.Round.WhoseTurn.StatusPlayer != StatusPlayer.defence && game.Round.WhoseTurn.StatusPlayer != StatusPlayer.attack)
+                        Console.WriteLine("0) пропустить ");
+                    }
+                    if (game.Round.WhoseTurn.StatusPlayer == StatusPlayer.defence)
+                    {
+                        Console.WriteLine("-1) взять все карты ");
+                    }
+                    ShowPlayerCards();
+
+                    if (game.Round.DefencePlayer.Hand.Count == 0)
+                    {
+                        game.Round.RoundEndResult = RoundEndResult.defended;
+                        Console.Clear();
+                        return;
+                    }
+                    bool validValue;
+                    int input;
+                    do
+                    {
+                        Console.WriteLine("введите число");
+                        validValue = int.TryParse(Console.ReadLine(), out input);
+                    } while (!validValue);
+                    if (input == 0)
+                    {
+                        if (game.Round.WhoseTurn.StatusPlayer == StatusPlayer.throwsUp)
                         {
-                            Console.WriteLine("0) пропустить ");
+                            game.MakeMove(input);
+                            game.Round.WhoseTurn = game.Round.ListThrowPlayers[i];
+                            //game.Round.ListThrowPlayers.RemoveAt(i);
+                            //game.СhangeWhoseTurn();
+                            Console.Clear();
+                            ShowCardPair();
+                            break;
                         }
+                    }
+                    if (input == -1)
+                    {
                         if (game.Round.WhoseTurn.StatusPlayer == StatusPlayer.defence)
                         {
-                            Console.WriteLine("-1) взять все карты ");
-                        }
-                        ShowPlayerCards();
 
-                        if (game.Round.WhoseTurn.Hand.Count == 0 && game.Round.WhoseTurn.StatusPlayer == StatusPlayer.defence)
-                        {
-                            game.Round.RoundEndResult = RoundEndResult.defended;
+                            game.Round.RoundEndResult = RoundEndResult.notDefended;
+                            game.MakeMove(input);
+                            game.СhangeWhoseTurn();                            
+                            Console.Clear();
+                            ShowCardPair();
                             return;
                         }
-                        bool validValue;
-                        int input;
-                        do
-                        {
-                            Console.WriteLine("введите число");
-                            validValue = int.TryParse(Console.ReadLine(), out input);
-                        } while (!validValue);
-                        if (input == 0)
-                        {
-                            if(game.Round.WhoseTurn.StatusPlayer != StatusPlayer.throwsUp)
-                            {
-                                break;
-                            }
-                            game.MakeMove(input);
-                            game.СhangeWhoseTurn();
-                            break;
-                        }
-                        if (input == -1)
-                        {
-                            if (game.Round.WhoseTurn.StatusPlayer != StatusPlayer.defence)
-                            {
-
-                                game.Round.RoundEndResult = RoundEndResult.notDefended;
-                                game.MakeMove(input);
-                                game.СhangeWhoseTurn();
-                                ShowCardPair();
-                                return;
-                            }
-                            break;
-                        }
+                        //Console.Clear();
+                        //break;
+                    }
+                    if (input > 0 && input <= game.Round.WhoseTurn.Hand.Count)
+                    {
                         game.MakeMove(input);
-                        if (game.Round.WhoseTurn.StatusPlayer != StatusPlayer.defence)
+                        if (game.Round.WhoseTurn.StatusPlayer == StatusPlayer.defence)
+                        {                                                        
+                            i = 1; // если игрок отбился значит  появилась новая карта на столе которая возможно у кого то есть, поэтому 
+                            // обновляем фор и опять проходим по всем игрокам пока они все не пропустят ход.
+                        }
+                        if (game.Round.WhoseTurn.StatusPlayer == StatusPlayer.throwsUp)
                         {
                             game.Round.ListThrowPlayers = game.Round.GetNewQueueThrowPlayers(game, game.Round.WhoseTurn);
                         }
                         game.СhangeWhoseTurn();
-                        Console.Clear();
-                        ShowCardPair();
+                        //Console.Clear();
+                        //ShowCardPair();
                     }
+                    Console.Clear();
+                    ShowCardPair();
                 }
             }
+            game.Round.RoundEndResult = RoundEndResult.defended;
+            return;
         }
+
         public void ShowCardPair()
         {
             foreach (var cardPairsOnDesk in game.CardPairsOnDesk)
