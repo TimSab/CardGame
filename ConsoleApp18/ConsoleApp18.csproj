@@ -63,6 +63,7 @@
     <Compile Include="CardPairOnDesk.cs" />
     <Compile Include="Deck.cs" />
     <Compile Include="ConsoleDesk.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="DurakGame.cs" />
     <Compile Include="Program.cs" />
