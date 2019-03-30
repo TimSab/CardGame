@@ -21,7 +21,7 @@ namespace ConsoleApp18
                 game.Round.StartRound(game);
                 CurrentRound(game);
                 game.Round.EndRound();
-                if (game.Deck.Cards.Count == 0)
+                if (game.Deck.Cards.Count == 0) // проверка условий для окончания игры.
                 {
                     var playerInGameCount = 0;
                     foreach (var player in game.Players)

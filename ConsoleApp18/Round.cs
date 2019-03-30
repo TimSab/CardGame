@@ -24,19 +24,19 @@ namespace ConsoleApp18
                 WhoseTurn = DecideWhoseTurnFirstRound(game);
             }
             game.SetStatusPlayer();
-            DecideWhoseTurn(game);
+            WhoseTurn = DecideWhoseTurn(game);
 
 
             foreach (var player in game.Players)
             {
                 if (player.StatusPlayer == StatusPlayer.defence)
                 {
-                    DefencePlayer = player;
+                    DefencePlayer = player; // определяется отбивающий игрок, он будет отбивающим весь раунд.
                     break;
                 }
             }
-            ListThrowPlayers = GetNewQueueThrowPlayers(game);
-            ListThrowPlayers.Add(game.Players.Where(p => p.StatusPlayer == StatusPlayer.attack).First());
+            ListThrowPlayers = GetNewQueueThrowPlayers(game); // определяется очередь из подкидывающих игроков, также на весь раун.
+            ListThrowPlayers.Add(game.Players.Where(p => p.StatusPlayer == StatusPlayer.attack).First()); // добавляется к очереди подкидывающих игроков игрок атакующий.
 
             game.HandOutCards();
         }

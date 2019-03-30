@@ -228,10 +228,10 @@ namespace ConsoleApp18
                     }
                 }
             }
-            else if (Round.RoundStatus == RoundStatus.continues)
-            {
-                return;
-            }
+            //else if (Round.RoundStatus == RoundStatus.continues)
+            //{
+            //    return;
+            //}
             else if (Round.LastRoundResult == RoundEndResult.notDefended)
             {
                 Player pastDefencePlayer = null;
